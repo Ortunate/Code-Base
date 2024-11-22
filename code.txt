@@ -1,0 +1,1611 @@
+MOSTLY BASED ON PROPER INPUT!!!!!!!!!!!!!!
+COMMONLY NO CHECKINGS
+
+1.Diamond
+#include <bits/stdc++.h>
+void func0(int d,char c) {
+	if (d % 2 == 0)
+		printf("Wrong diameter");
+	else
+		for (int i = 1; i <= d ; i++){
+			int m = abs(i - (d + 1) / 2);//m is the deviatation of i
+			for (int j = 1; j <= d; j++) {
+				if (j <= m || j > d - m )
+					printf("\t");
+				else
+					printf("%c\t",c);
+				if (j == d)
+					printf("\n");
+			}
+		}
+	return;
+}
+int main(void) {
+	func0(3, '*');
+	return 0;
+}
+//############################################################################
+
+
+
+############################################################################//
+2.Rational
+#include <bits/stdc++.h>
+
+int gcd(int a,int b) {
+	return(a % b == 0)?b:gcd(b, a % b);
+}
+struct rational{//b belong to N*
+	int x, y;
+};
+void print_rational(struct rational a) {
+	if (a.x == 0)
+		printf("0\n");
+	else
+		if (a.x + a.y == 0)
+			printf("-1\n");
+		else
+			printf("%d / %d\n", a.x, a.y);
+	return;
+}
+struct rational add_rational(struct rational a, struct rational b) {
+	struct rational c;
+	c.x = a.x * b.y + b.x * a.y;
+	c.y = a.y * b.y;
+	if (gcd(c.x, c.y) != 1) {
+		int GCD = gcd(c.x, c.y);
+		c.x = c.x / GCD;
+		c.y = c.y / GCD;
+	}
+	return c;
+};
+struct rational sub_rational(struct rational a, struct rational b) {
+	struct rational c;
+	c.x = a.x * b.y - b.x * a.y;
+	c.y = a.y * b.y;
+	if (gcd(c.x, c.y) != 1) {
+		int GCD = gcd(c.x, c.y);
+		c.x = c.x / GCD;
+		c.y = c.y / GCD;
+	}
+	return c;
+};
+struct rational mul_rational(struct rational a, struct rational b) {
+	struct rational c;
+	c.x = a.x * b.x;
+	c.y = a.y * b.y;
+	if (gcd(c.x, c.y) != 1) {
+		int GCD = gcd(c.x, c.y);
+		c.x = c.x / GCD;
+		c.y = c.y / GCD;
+	}
+	return c;
+};
+struct rational div_rational(struct rational a, struct rational b) {
+	struct rational c;
+	c.x = a.x * b.y;
+	c.y = a.y * b.x;
+	if (gcd(c.x, c.y) != 1) {
+		int GCD = gcd(c.x, c.y);
+		c.x = c.x / GCD;
+		c.y = c.y / GCD;
+	}
+	return c;
+};
+
+int main(void) {
+	struct rational x = { 1,8 }, y = { -1,8 };
+	print_rational(add_rational(x, y));
+	print_rational(sub_rational(x, y));
+	print_rational(mul_rational(x, y));
+	print_rational(div_rational(x, y));
+	return 0;
+}
+//####################################################################
+
+
+
+####################################################################//
+3.Print_Randoms_Histogram
+#include <bits/stdc++.h>
+#define n 50
+#define up 10
+
+int a[n], count[up] = {};
+void get_random(int upbound){
+	int i ;
+	for (i = 0; i < n; i++) {
+		a[i] = rand() % upbound;
+		count[a[i]]++;
+	}
+}
+int check_count() {
+	int i,j=0;//
+	for (i = 0; i < up; i++) {
+		if (count[i] > 0)
+			return 1;
+	}
+	if (count[up - 1] <= 0)
+		return 0;
+}
+int main(void){
+	get_random(up);
+	int i;
+	for (i = 0; i < up; i++) {// i for row
+		printf("%d\t", i + 1);
+		if (i + 1 == up)
+			printf("\n\n");
+	}
+	while(check_count()) {
+		int j;//j for row
+		for (j = 0; j < up; j++) {
+			if (count[j] > 0) {
+				printf("%c\t", '*');
+				count[j] = count[j] - 1;
+			}
+			else
+				printf("\t");
+			if (j == up - 1)
+				printf("\n");
+		}
+	}
+	return 0;
+}
+//##################################################################################
+
+
+
+#############################################################################//
+4.Cross and square light for no spawning
+#include<bits/stdc++.h>
+using namespace std;
+int a[101][101];
+int dx[24] = { 1,0,-1,0,2,0,-2,0,1,-1,-1,1,
+            2,2,1,-2,-2,-1,-2,-2,-1,1,2,2 };
+int dy[24] = { 0,1,0,-1,0,2,0,-2,1,1,-1,-1,
+            1,2,2,1,2,2,-1,-2,-2,-2,-2,-1 };
+int spawnpoints();
+int main() {
+    printf("%d", spawnpoints());
+    return 0;
+}
+//判断是否溢出
+int judge(int x, int y, int n) {
+    if (x > 0 && x <= n 
+        && y > 0 && y <= n)
+        return 1;
+    else
+        return 0;
+}
+//给数组赋值，并计算光个数r
+int spawnpoints() {
+    int n, m, k;
+    int i=0, l=0, x, y, r = 0;
+   
+    scanf("%d %d %d", &n, &m, &k);
+    for (; i < m + k; i++) {
+        scanf("%d %d", &x, &y);
+        if(!a[x][y]) r++;
+        a[x][y] = 1;
+        if (i < m) {//Torch
+            for (l=0; l < 12; l++) {
+                if (judge(x + dx[l], y + dy[l], n) && a[x + dx[l]][y + dy[l]] != 1) {
+                    a[x + dx[l]][y + dy[l]] = 1;
+                    r++;
+                }
+            }
+        }
+        else {//ljdawj Stone
+            for (l=0; l < 24; l++) {
+                if (judge(x + dx[l], y + dy[l], n) && a[x + dx[l]][y + dy[l]] != 1) {
+                    a[x + dx[l]][y + dy[l]] = 1;
+                    r++;
+                }
+            }
+        }
+
+    }
+    return n*n-r;
+}
+//###################################################################
+
+################################################################################//
+5.Factorial
+#include<bits/stdc++.h>
+
+//v1.0
+int factorial(int n) {
+	if (n > 0) {
+		int r = factorial(n - 1);
+		return n * r;
+	}
+	else
+		return 1;
+}
+//v2.0
+int factorial(int n){
+    int fac=1;
+    for(int i=1;i<n+1;i++)
+        fac *=i;
+    return fac;
+}
+
+int Combination(int n, int k){
+    return (factorial(n)/factorial(k))/factorial(n-k);
+}
+
+int main() {
+	int n;
+	scanf_s("%d", &n);
+	printf("%d", factorial(n));
+}
+//
+###################
+#################
+
+###############
+###############//
+6.Mark rectangles and report wanted point's marking situation
+#include<bits/stdc++.h>
+
+struct area {
+	int t;
+	int l;//t for times,l for last time blasted
+}A[101][101] = { 0 }, B[10000];//dismiss 0;
+
+int n, m, x, y;//size n*m,times x,key points y
+void blast(int a, int b, int c, int d,int i);
+
+int main() {
+	scanf_s("%d %d %d %d", &n, &m, &x, &y);
+	
+	int i = 0;
+	for (; i < x; i++) {//bomb targets
+		int x1, y1, x2, y2;
+		scanf_s("%d %d %d %d", &x1, &y1, &x2, &y2);
+		blast(x1, y1, x2, y2, i + 1);
+	}
+
+	for (i = 0; i < y; i++) {//save key points info
+		scanf_s("%d %d", &B[i].t, &B[i].l);
+	}
+	for (i = 0; i < y; i++) {//then print
+		if (A[B[i].t][B[i].l].t == 0)
+			printf("N\n");
+		else
+			printf("Y %d %d\n", A[B[i].t][B[i].l].t, A[B[i].t][B[i].l].l);
+	}
+	return 0;
+}
+
+void blast(int a, int b, int c, int d,int i) {
+	int j, k;
+	for (j = a; j < c + 1; j++) {
+		for (k = b; k < d + 1;k++) {
+			A[j][k].t++;
+			A[j][k].l = i;
+		}
+	}
+	return;
+}
+//############################
+###########################
+
+####################
+#####################//
+7.Count leap years and print them
+#include<bits/stdc++.h>
+
+int a[360] = { 0 };
+int leap_year(int n) {
+	if ((n % 4 == 0 && n % 100 != 0) || n % 400 == 0)
+		return 1;
+	else
+		return 0;
+}
+
+int main() {
+	int x, y, i, k = 0;//1582<=x<y<=3000
+	scanf_s("%d %d", &x, &y);
+	for (i = x; i <= y; i++) {
+		if (leap_year(i))
+			a[k++] = i;
+	}
+	printf("%d\n", k);
+	i = 0;
+	while (a[i] != 0)
+		printf("%d ", a[i++]);
+	return 0;
+}
+//####################
+####################
+
+#####################
+######################//
+8.Adding edges of a matric
+#include<bits/stdc++.h>
+
+int m, n;
+int a[100][100] = { 0 };
+
+void input_matric(int m, int n) {
+	//input a n*m matric data
+	int i = 0, j;
+	for (; i < m; i++) {//row
+		for (j = 0; j < n; j++) {//column
+			scanf_s("%d", &a[i][j]);
+		}
+	}
+}
+
+int add_edges(int m, int n) {
+	int sum = 0, i;
+
+	for (i = 0; i < n; i++) {
+		sum = sum + a[0][i];
+		if (m > 1)
+			sum += a[m - 1][i];
+	}
+		
+	for (i = 1; i < m - 1; i++) {
+		sum = sum + a[i][0];
+		if (n > 1)
+			sum += a[i][n - 1];
+	}
+		
+	return sum;
+}
+
+int main() {
+	scanf_s("%d %d", &m, &n);
+	input_matric(m,n);
+	printf("%d", add_edges(m,n));
+	return 0;
+}
+//################
+#################
+
+#################
+################//
+9.Reverse inputs that end with 0
+#include<bits/stdc++.h>
+
+int a[101] = { 0 };
+int main() {
+	int i = 0, x;
+	while (1) {
+		scanf_s("%d",&x);
+		if (x == 0)
+			break;
+		else
+			a[i++] = x;
+	}
+
+	for (; i >= 1;)
+		printf("%d ", a[--i]);
+	return 0;
+}
+//##############
+###################
+
+##################
+##############?/
+10.Input abc.d and output d.cba
+#include<bits/stdc++.h>
+
+int main() {
+	float x;
+	scanf_s("%f", &x);
+	int a[4];
+	a[0] = x / 100;
+	a[1] = (int)(x / 10) % 10;
+	a[2] = (int)x % 10;
+	a[3] = round((x - 100 * a[0] - 10 * a[1] - a[2]) * 10);
+	printf("%.3f", a[3] * 1.0 + a[2] * 1.0 / 10 + a[1] * 1.0 / 100 + a[0] * 1.0 / 1000);
+	return 0;
+}
+//#########
+############
+
+#########
+############//
+11.Equal difference array summarization
+#include<bits/stdc++.h>
+
+int main() {
+	long long a1, a2, n;
+	scanf_s("%lld %lld %lld", &a1, &a2, &n);
+	long long d = a2 - a1;
+	printf("%lld", n * a1 + n * (n - 1) * d / 2);
+	return 0;
+}
+//##########
+###########
+
+###########
+###########//
+12.n people k days do m exams,each day test prepared number 
+#include<bits/stdc++.h>
+
+int a[1001][1001] = {0};
+int main() {
+	int n, m, k, i = 0, l;//n people,m exams,k days
+	scanf_s("%d %d %d",&n,&m,&k);
+	for (; i < n; i++) {
+		for (l = 1; l <= m; l++) {// l th exam
+			int d;
+			scanf_s("%d",&d);
+			a[d][l] = 1;
+		}
+	}
+	//exam 1 2 3
+	//day
+	//1    0 0 0
+	//2    0 0 0
+
+	for (i = 1; i <= k;i++) {
+		for (l = 1; l <= m; l++)
+			a[i][0] += a[i][l];
+	}
+
+	for (i = 1; i <= k;i++)
+		printf("%d ", a[i][0]);
+	return 0;
+}
+//###########
+################
+
+################
+####################?/
+13.Selectsort array
+#include<bits/stdc++.h>
+#define LEN 101
+ 
+int a[LEN];
+
+void inArray(int arr[], int n) {
+	for (int i = 0; i < n;) 
+		scanf_s("%d",&arr[i++]);
+}
+
+void outArray(int arr[], int n) {
+	for (int i = 0; i < n;)
+		printf("%d ", arr[i++]);
+}
+
+void selectSort(int arr[], int n) {
+	int i = 0, j, temp;
+	for (; i < n - 1 ; i++) {
+		temp = i;
+		for (j = i + 1; j <= n - 1 ; j++) {
+			if (arr[j] < arr[temp])
+				temp = j;
+		}
+		if (temp == i)
+			continue;
+		//swap i,temp
+		arr[i] = arr[i] ^ arr[temp];
+		arr[temp] = arr[temp] ^ arr[i];
+		arr[i] = arr[i] ^ arr[temp];
+	}
+}
+
+int main() {
+	int n;
+	scanf_s("%d", &n);
+	inArray(a, n);
+	selectSort(a, n);
+	outArray(a, n);
+	return 0;
+}
+//############################
+
+
+########################//
+14.Print number of a day in the Year
+#include<bits/stdc++.h>
+
+struct date {
+    int y, m, d;
+};
+
+int main()
+{
+    struct date temp;
+    scanf("%d %d %d", &temp.y, &temp.m, &temp.d);
+    int n;
+    short Bool0 = (temp.m > 0 && temp.m < 13 && temp.d < 32 && temp.d>0 && temp.y>0) ? 1 : 0; // Judge date legality
+    short Bool1 = (!((temp.y % 4 == 0 && temp.y % 100 != 0) || 
+        (temp.y % 400 == 0)) && temp.m == 2 && temp.d == 29) ? 1 : 0; // Lunar
+    if (!Bool0 || Bool1) {
+        printf("不存在这样的日期");
+        return 0;
+    }
+    switch (temp.m) {
+    case 1:
+        n = temp.d;
+        break;
+    case 2:
+        n = temp.d + 31;
+        break;
+    case 3:
+        n = temp.d + 59;
+        break;
+    case 4:
+        n = temp.d + 90;
+        break;
+    case 5:
+        n = temp.d + 120;
+        break;
+    case 6:
+        n = temp.d + 151;
+        break;
+    case 7:
+        n = temp.d + 181;
+        break;
+    case 8:
+        n = temp.d + 212;
+        break;
+    case 9:
+        n = temp.d + 243;
+        break;
+    case 10:
+        n = temp.d + 273;
+        break;
+    case 11:
+        n = temp.d + 304;
+        break;
+    case 12:
+        n = temp.d + 334;
+        break;
+    default:
+        break;
+    }
+    if (temp.m > 2 &&(( temp.y % 4 == 0 && temp.y % 100 != 0) || (temp.y % 400 == 0))
+        n += 1;
+    printf("%d", n);
+    return 0;
+}
+//###################
+
+################//
+15.Give out n random numbers
+#include<stdio.h>
+#include<time.h>
+#include<math.h>
+#include<stdlib.h>
+
+int main(){
+    srand(time(NULL));
+    while(1){
+    printf("How many numbers do u need in D?Enter \"0\" to exit.\n");
+    int n, m = 33;
+    scanf("%d", &n);
+    if(n == 0)
+        return 0;
+    for(int i = 0; i < n; i++)
+        printf("%d\t",rand()%m + 1);
+    }
+    return 0;
+}
+//#################
+
+#################//
+16.__Function return nsquarex
+ll nsquarex(const int x, const int n) {
+    if (n == 1)
+        return x;
+    else
+        return(n % 2 == 0) ? nsquarex(x, n / 2) * nsquarex(x, n / 2)
+        : nsquarex(x, (n + 1) / 2) * nsquarex(x, n / 2);
+}
+//#####################
+
+######################//
+17.Test << >> rules
+ /*unsigned int a[100];
+    a[0]=0b11100111;
+    a[1]=a[0]<<2;
+    a[2]=a[1]>>2;
+    a[3]=a[0]>>2;
+    a[4]=a[3]<<2;
+    
+    a[5]=0xaaaaaaaa;
+    a[6]=a[5]<<1;
+    a[7]=a[6]>>1;
+    a[8]=a[5]<<2;
+    a[9]=a[8]>>2;
+    a[10]=a[5]>>1;
+    a[11]=a[10]<<1;
+    a[12]=a[5]>>2;
+    a[13]=a[12]<<2;
+
+    for(int i=0;i<14;i++)
+        printf("%u\t",a[i]);
+
+
+231     924     231     57      228     -1431655766     1431655764     715827882        -1431655768     -357913942      -715827883      -1431655766     -357913942      -1431655768
+
+
+231     924     231     57      228     2863311530      1431655764      715827882        2863311528      3937053354      3579139413      2863311530       3937053354      2863311528
+*/
+//###################
+
+##############//
+18.~ n bits right to the pth bit
+#include<stdio.h>
+
+int main(){
+    int x,p,n,replace_part;
+    scanf("%d %d %d",&x,&p,&n);
+    int mask=((0b1<<n)-1)<<(p-n+1);
+    replace_part=(~(x&mask))&mask;
+    x=(x& (~mask)) | replace_part;
+
+   // x=x& ((~(((0b1<<n)-1)<<(p-n+1))))\
+    | (~(x&(((0b1<<n)-1)<<(p-n+1))))&(((0b1<<n)-1)<<(p-n+1));
+
+//x=x^((~(~0<<n))<<(p-n+1))
+
+    printf("%d",x);
+    return 0;
+}
+//###############
+
+#################//
+19.Circulating >> n bits int x
+#include<stdio.h>
+
+int main(){
+    int x,n;
+    scanf("%d %d",&x,&n);
+    n=n%32;
+    int y=((x&((0b1<<n)-1))<<(32-n))|((x>>n)&(0b1<<(32-n))-1);
+    printf("%d",y);
+    return 0;
+}
+//#####################
+
+#####################//
+20.Dicegame 0(R1: 7/11 win,2/3/12 lose,Rn:R1 win,7 lose
+#include<stdio.h>
+#include<stdlib.h>
+
+void diceGame(int randSeed){
+    srand((unsigned) randSeed);
+    int i=1,score=0;
+    score=rand()%6+rand()%6+2;
+    if(score==7||score==11){
+        printf("Round 1:  Score:%d  Success!",score);
+        return;
+    }
+    else if(score==2||score==3||score==12){
+        printf("Round 1:  Score:%d  Failed!",score);
+        return;
+    }   else{
+        printf("Round 1:  Score:%d  Continue!",score);
+        printf("\nNext rounds: Score %d:Success, Score 7:Failed, others:Continue",score);
+        int s=score;
+        score=0;
+        while(score!=s){
+            score=rand()%6+rand()%6+2;
+            if(score==s){
+                printf("\nRound %d:  Score:%d  Success!",++i,score);
+                return;
+            }
+            else if(score==7){
+                printf("\nRound %d:  Score:%d  Failed!",++i,score);
+                return;
+            }else{
+                printf("\nRound %d:  Score:%d  Continue!",++i,score);
+                continue;
+            }
+        }
+    }
+}
+
+int main(){
+    int input;
+    scanf("%d",&input);
+    diceGame(input);
+    return 0;
+}
+//#############
+
+###############//
+21.Bubble_sort
+void bubble_sort(int arr[],int n){
+    int i=0,j=0;
+    for(;i<n-1;i++){
+        for(j=0;j+i+1<n;j++){
+            if(*(arr+j)>*(arr+j+1)){
+                *(arr+j)=*(arr+j)^*(arr+j+1);
+                *(arr+j+1)=*(arr+j+1)^*(arr+j);
+                *(arr+j)=*(arr+j)^*(arr+j+1);
+                }
+        }
+    }
+    return;
+}
+//##################
+
+###################//
+22.Overturn array[n] 
+void overturn(int arr[],int n){
+    int *ph=arr,*pt=arr+n-1;
+    while(ph<pt){
+        *ph=*ph^*pt;
+        *pt=*pt^*ph;
+        *ph=*ph^*pt;
+        ph++;
+        pt--;
+    }
+}
+//#############
+
+################//
+23.Print FBNQ sequence
+#include<stdio.h>
+#define NUM 8
+
+long long f[10000]={1,1,2,3,5,8,13};
+
+int main(){
+    int n, i=0, j=0;
+    scanf("%d",&n);
+    if(n>2){
+        for(;i<=(n-1)/NUM;i++){
+            for(j=0;j<NUM&&(NUM*i+j)<n;j++){
+                f[NUM*i+j+2]=f[NUM*i+j+1]+f[NUM*i+j];
+                printf("%10d",f[NUM*i+j]);
+            }
+        printf("\n");
+        }
+    }
+    else if(n>0)
+        printf("%10d",f[n-1]);
+    return 0;
+}
+//###################
+
+################//
+24.Print a**2 s.t. a**2 < n && a**2 =10b**2+c**2
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+int main(){
+    int n,a=1,b=0,c=0;
+    scanf("%d",&n);
+    for(;a*a<n;a++){
+        for(b=1;10*b*b<a*a;b++){
+            c=sqrt(a*a-10*b*b);
+            if(sqrt(a*a-10*b*b)-c==0){
+                printf("%d=%d*%d=%d*%d*10+%d*%d\n",a*a,a,a,b,b,c,c);
+                break;
+            }
+        }
+    }
+}
+//############
+
+#############//
+25.Print Hailstone numbers by n
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+void hailstone(int n){
+    int i=1;
+    printf("Hailstone generated by %d:\n",n);
+    while(n!=1){
+        printf("%5d",n);
+        if(n%2)
+            n=3*n+1;
+        else
+            n=n/2;
+        if(!(i%6))
+            printf("\n");
+        i++;
+    }
+    printf("%5d\n",n);
+	printf("Number of hailstone generated:%d",i);
+}
+
+int main(){
+    int n;
+    scanf("%d",&n);
+    hailstone(n);
+    return 0;
+}
+//###########
+
+#############//
+26.Partially count chars in str
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+
+#define LEN 10000
+char str[LEN];
+void read_str(char *p);
+
+int main(){
+    for(int i=0;i<LEN;i++){
+        str[i]=getchar();
+        if(str[i]=='\n')
+            break;
+    }
+    return 0;
+}
+
+void read_str(char *p){
+    short a[1000]={0};
+    while(*p!='\n'){
+        if(*p>47&&*p<58)
+            a[*p-48]++;//0~9
+        else if(*p>64&&*p<91)
+            a[*p-65+10]++;//10~35
+        else if(*p>96&&*p<123)
+            a[*p-97+10]++;
+        else
+            a[36]++;
+        p++;
+    }
+    for(char i=0;i<37;i++){
+        if(a[i]>0){
+            if(i<10)
+                printf("%d:%d\n",i,a[i]);
+            else if(i==36)
+                printf("others:%d\n",a[i]);
+            else
+                printf("%c:%d\n",i+55,a[i]);
+        }
+    }
+    return;
+}
+//#############
+
+#################//
+27.Exchange arr k with n-k parts
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+//#include<time.h>
+int a[400]={0};
+void swap(int *a,int *b);
+void move(int arr[], int n, int k);
+
+int main(){
+    int n,k;
+    scanf("%d %d",&n,&k);
+    move(a,n,k);
+    for(int i=0;i<n;i++){
+        printf("%d ",a[i]);
+        }
+    return 0;
+}
+
+void swap(int *a,int *b){
+    *a=*a^*b;
+    *b=*b^*a;
+    *a=*a^*b;
+    return;
+}
+
+void move(int arr[], int n, int k) {
+    for (int i = 0, j = k - 1; i < j; i++, j--) {
+        swap(&arr[i],&arr[j]);
+    }
+    for (int i = k, j = n - 1; i < j; i++, j--) {
+        swap(&arr[i],&arr[j]);
+    }
+    for (int i = 0, j = n - 1; i < j; i++, j--) {
+        swap(&arr[i],&arr[j]);
+    }
+}
+//#################
+
+###############//
+28.__F_convert_Hex_to_Dec
+long convert_hex_to_dec(char *p){
+    long int i=0;
+    char a[1000]={0};
+    while((*p>='0'&&*p<='9')||(*p>='a'&&*p<='f')||(*p>='A'&&*p<='F')){
+        if(*p>='0'&&*p<='9')
+            i=i*16+*p-'0';
+        if(*p>='a'&&*p<='f')
+            i=i*16+*p-'a'+10;
+        if(*p>='A'&&*p<='F')
+            i=i*16+*p-'A'+10;
+        p++;
+    }
+    return i;
+}
+//##################
+
+######################//
+29.Cap strs as terminal arguments
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+//#include<time.h>
+
+int main(int argc, const char *argv[]){
+    char *p=(char *)calloc(sizeof(char),51*argc/sizeof(char));
+    for(int i=1;i<argc;i++){
+        strcat(p,argv[i]);
+    }
+    printf("%s",p);
+    return 0;
+}
+//#######################
+
+#######################//
+30.Store, sort and print selected N webs
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+//#include<time.h>
+#define N  4 
+struct web{
+    char *abbr, *name, *URL;
+}webs[N];
+void sort(struct web webs[],int n);
+
+int main(int argc, const char *argv[]){
+    
+    for (int i = 0; i < N; i++) {
+        webs[i].abbr = malloc(4 * sizeof(char));
+        webs[i].name = malloc(20 * sizeof(char));
+        webs[i].URL = malloc(50 * sizeof(char));
+    }
+    char *a=malloc(4*sizeof(char));
+
+    for(int i=0;i<N;i++)
+        scanf("%s %s %s",webs[i].abbr,webs[i].name,webs[i].URL);
+    scanf("%s",a);
+
+    sort(webs,N);
+    for(int i=0;i<N;i++)
+        printf("%s %s %s\n",webs[i].abbr,webs[i].name,webs[i].URL);
+    int i=0;
+    for(;i<N;i++){
+        if(strcmp(a,webs[i].abbr)==0){
+            printf("%s",webs[i].URL);
+            break;
+        }
+        if(i==N-1)
+            printf("未找到搜寻的网址");
+    }
+    for (int i = 0; i < N; i++) {
+        free(webs[i].abbr);
+        free(webs[i].name);
+        free(webs[i].URL);
+    }
+    free(a);
+    return 0;
+}
+
+void sort(struct web webs[],int n){
+    for(int i=0;i<n-1;i++){
+        for(int j=0;j<n-1-i;j++){
+            if(strcmp(webs[j].abbr,webs[j+1].abbr)>0){
+                struct web temp = webs[j];
+                webs[j]=webs[j+1];
+                webs[j+1]=temp;
+            }
+        }
+    }
+}
+//###########################
+
+########################//
+31.__F_secure_char
+void secure(char *p){
+    char c05,c67=(*p>>6&0b11);
+    c05=((0b00010101&*p)<<1)|(((0b00101010&*p)>>1)&0b01111111);//exchange 0,2,4 with 1,3,5
+    *p=((c05<<c67 &0b00111111)|(c05>>(6-c67)))|(c67<<6);
+    return;
+//################
+
+################//
+32.count inputing chars,\ns,and Chinese Characters
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+
+int main(){
+    unsigned int c;
+    int c1=0,c21=0,c22=0,c3=0,c4=0;
+//1 for all,4 for 'space'(\n),21 for 汉, 22 for "",3 for'\n'
+    short S=0;//a sign
+    while((c=getchar())!=EOF){
+        c1++;
+        if(c=='\n'){
+            c3++;
+            if(S==2)
+                c21++;
+            S=0;
+            continue;
+        }else 
+        if(c=='\t'||c==' '){
+            c4++;
+            if(S==2)
+                c21++;
+            S=0;
+            continue;
+        }else 
+        if(c>0x80){
+            c22++;
+            getchar();//clear input stream
+            getchar();
+        }
+        else 
+        if(S==0)
+            S=1;
+        else 
+        if(S==1)
+            S=2;
+        
+
+    }
+    printf("字数 %d\n字符数 %d\n行数 %d",c21+c22,c1-c3-c4,c3);
+    //printf("%d %d %d %d",c1,c2,c3,c4);
+    return 0;
+}
+//#####################
+
+################//
+33.Replace 'A's with 'A+k' and change sequence between each two chars
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+
+int main(){
+    char str[81],c;
+    short k=0,j;
+    while((c=getchar())!='\n')
+        str[k++]=c;
+    str[k]='\0';
+    scanf("%hd",&j);
+    for(short i=0;i<k;i++){//replace
+        if(str[i]>='A'&&str[i]<='Z'){
+            str[i]=(str[i]-'A'+j-1)%26+'A';
+        }
+    }
+
+    for(short i=0;i<k-1-k%2;i+=2){//exchange
+        str[i]=str[i]^str[i+1];
+        str[i+1]=str[i+1]^str[i];
+        str[i]=str[i+1]^str[i];
+    }
+    printf("%s",str);
+    return 0;
+}
+//#########################
+
+###################//
+34.Print IP
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+
+int main(){
+    unsigned int mask=(0b1<<8)-1;
+    do{
+        int web;
+        scanf("%d",&web);
+        int a=(web>>24)&mask,b=(web>>16)&mask,c=(web>>8)&mask,d=web&mask;
+        printf("%d.%d.%d.%d\n",a,b,c,d);
+    }while(getchar()!=EOF);
+    
+    return 0;
+}
+//#######################
+
+#################//
+35.cmd0_show_file_content_with_linenum,
+ cmd1_show_10_lines_when_inputing_'q'
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+//#include<time.h>
+//#include<ctype.h>
+
+void command0(const char *file);
+void command1(const char *file);
+int main(int argc, const char *argv[]){
+    char *file="src/step1_1/test1.c";
+    char cmd[30];
+    short i=0;
+    while((cmd[i++]=getchar())!='\n');
+    cmd[--i]='\0';
+
+    if(strcmp(cmd,"type_c test1.c ")==0){
+        command0(file);
+    }
+    else if(strcmp(cmd,"type_c /p test1.c")==0){
+        command1(file);
+    }
+    else{
+    printf("指令错误");
+    exit(EXIT_FAILURE);
+    }
+    return 0;
+}
+
+void command0(const char *file){
+    FILE *f=fopen(file,"r");
+    char c;
+    int i=1;
+    putchar('1');
+    putchar(' ');
+    putchar(' ');
+    while((c=fgetc(f))!=EOF){
+        putchar(c);
+        if(c=='\n')
+            printf("%d  ",++i);
+    }
+    fclose(f);
+    return;
+}
+void command1(const char *file){
+    FILE *f=fopen(file,"r");
+    char c,q;
+    putchar('1');
+    putchar(' ');
+    putchar(' ');
+
+    for(int i=0;(c=fgetc(f))!=EOF;){
+        putchar(c);
+        if(c=='\n'){
+            i++;
+            if(i%10==0){
+                if((q=getchar())!='q')
+                    break;
+                else getchar();
+            }
+            printf("%d  ",i%10+1);
+        }
+    }
+
+    fclose(f);
+    return;
+}
+//#####################
+
+#####################//
+36.List.h
+#ifndef LIST_H
+#define LIST_H
+#include<stdbool.h>
+//struct for storage
+struct content{
+    char c;
+};
+
+
+//seal
+typedef struct content Item;
+typedef struct node{
+    Item item;
+    struct node *next;
+}Node;
+typedef Node *List;
+/*struct list{
+    Node *head, *tail;
+}List;
+*/
+
+//function declarations
+
+//Op:compare &&
+bool CompareItemAnd(const Item item0, const Item item1);
+
+//Op:compare ||
+bool CompareItemOr(const Item item0, const Item item1);
+
+//Operation: initialize a List
+//Precondition: plist is a List* not NULL
+//Postcondition:List initialized as null
+void InitializeList(List *plist);
+
+//Op:judge a list empty or not
+//Pre:plist
+//post:return true or F
+bool ListIsEmpty(const List *plist);
+
+//Op:judge a list full or not
+//Pre:plist
+//Post:return T or F
+bool ListIsFull(const List *plist);
+
+//Op:confirm the number of elements
+//Pre:plist
+//Post:return the number
+unsigned int ListItemCount(const List *plist);
+
+//Op:add an item
+//Post:T or F
+bool AddItem(Item item, List *plist);
+
+//Op:do Func to every element
+void Traverse(const List *plist, void(*pfunc)(Item item));
+
+//Op:free memories
+void EmptyList(List *plist);
+
+//Op:delete
+unsigned int DeleteNode(List *plist, Item item);
+
+#endif
+//#############################
+
+###########################//
+37.List.c
+#include<stdio.h>
+#include<stdlib.h>
+#include"list.h"
+
+//local func decl
+static void CopyToNode(Item item, Node *pnode);
+
+//api func
+
+bool CompareItemAnd(const Item item0, const Item item1){//
+    if(item0.c==item1.c)
+        return true;
+    else
+        return false;
+}
+
+bool CompareItemOr(const Item item0, const Item item1){//
+    if(item0.c==item1.c)
+        return true;
+    else
+        return false;
+}
+
+void InitializeList(List *plist){
+    *plist=NULL;
+}
+
+bool ListIsEmpty(const List *plist){
+    return(*plist==NULL)?true:false;
+}
+
+bool ListIsFull(const List *plist){
+    Node *pt=(Node *)malloc(sizeof(Node));
+    bool full=(pt==NULL)?true:false;
+    free(pt);
+    return full;
+}
+
+unsigned int ListItemCount(const List *plist){
+    unsigned int count=0;
+    Node *pn=*plist;
+    while(pn!=NULL){
+        count++;
+        pn=pn->next;
+    }
+    return count;
+}
+
+bool AddItem(Item item, List *plist){
+    Node *scan=*plist;
+    Node *pnew=(Node *)malloc(sizeof(Node));
+    if (pnew==NULL)
+        return false;
+    CopyToNode(item, pnew);
+    pnew->next=NULL;
+    if(scan==NULL)
+        *plist=pnew;
+    else{
+        while(scan->next!=NULL)
+            scan=scan->next;
+        scan->next=pnew;
+    }
+    return true;
+}
+
+void Traverse(const List *plist, void(*pfunc)(Item item)){
+    Node *pn=*plist;
+    while(pn!=NULL){
+        (*pfunc)(pn->item);
+        pn=pn->next;
+    }
+    return;
+}
+
+void EmptyList(List *plist){
+    Node *psave;
+    while(*plist!=NULL){
+        psave=(*plist)->next;
+        free(*plist);
+        *plist=psave;
+    }
+    return;
+}
+
+unsigned int DeleteNode(List *plist, Item item){
+    Node *pc=*plist, *pt=NULL;
+    int count=0;
+    while(CompareItemAnd(item,pc->item) && pc!=NULL){
+        count++;
+        pt=pc;
+        pc=pc->next;
+        free(pt);
+        pt=NULL;
+    }
+    *plist=pc;
+    Node *ps=pc;
+    while(pc!=NULL){
+        ps=pc;
+        pc=pc->next;
+        while(pc!=NULL && CompareItemAnd(item,pc->item)){
+            count++;
+            pt=pc;
+            pc=pc->next;
+            free(pt);
+        }
+        ps->next=pc;
+    }
+    return count;
+}
+
+
+//static func
+static void CopyToNode(Item item, Node *pnode){
+    pnode->item=item;
+    return;
+}
+//#########################
+
+######################//
+38.Print n-bit Purecomposite nums
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+#include<stdbool.h>
+//#include<time.h>
+//#include<ctype.h>
+
+
+bool IsComposite(int n);
+bool IsPureComposite(int n);
+int main(int argc, const char *argv[]){
+    int n=0,n10=1;
+    scanf("%d",&n);
+    for(int i=0;i<n;i++)
+        n10*=10;
+    for(int i=n10/10;i<n10;i++){
+        if(IsPureComposite(i))
+            printf("%d ",i);
+    }
+    return 0;
+}
+
+bool IsComposite(int n){
+    int flag=0;
+    if(n>2){
+        for(int i=2; i<=n/2+1; i++){
+			if(n%i==0){
+				flag=1;
+				break;
+			}
+        }
+    }
+	return flag;
+}
+
+bool IsPureComposite(int n){
+    while(IsComposite(n) && n>9){
+        n/=10;
+    }
+    return IsComposite(n);
+}
+//################
+
+###################//
+39.__F_IsPrime
+#include<stdbool.h>
+bool IsPrime(int n){
+    if(n<2)     exit(EXIT_FAILURE);
+    if(n==2)    return true;
+    for(int i=2;i<=sqrt(n);i++)
+        if(n%i==0)  return false;
+    return true;
+}
+//#################
+
+###############//
+40.Find abcde/fghij=x
+#include<stdio.h>
+int main()
+{
+    int x;
+    scanf("%d",&x);
+    int a,b,c,d,e,f,g,h,i,j;
+    for(a=1;a<10;a++){
+        for(b=0;b<10;b++){
+            if(b==a)    continue;
+            for(c=0;c<10;c++){
+                if(c==a || c==b)    continue;
+                for(d=0;d<10;d++){
+                    if(d==a || d==b || d==c)    continue;
+                    for(e=0;e<10;e++){
+                        if(e==a || e==b || e==c || e==d)    continue;
+                        for(f=0;f<10;f++){
+                            if(f==a || f==b || f==c || f==d || f==e)    continue;
+                            for(g=0;g<10;g++){
+                                if(g==a || g==b || g==c || g==d || g==e || g==f)    continue;
+                                for(h=0;h<10;h++){
+                                    if(h==a || h==b || h==c || h==d || h==e || h==f || h==g)    continue;
+                                    for(i=0;i<10;i++){
+                                        if(i==a || i==b || i==c || i==d || i==e 
+                                        || i==f || i==g || i==h)    continue;
+                                        for(j=0;j<10;j++){
+                                            if(j==a || j==b || j==c || j==d || j==e 
+                                            || j==f || j==g || j==h || j==i)    continue;
+                                            if(a*10000+b*1000+c*100+d*10+e==x*(f*10000+g*1000+h*100+i*10+j))
+                                                printf("%d%d%d%d%d/%d%d%d%d%d=%d\n",a,b,c,d,e,f,g,h,i,j,x);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } 
+                }
+            }
+        }
+    }
+    return 0;
+}
+//#################
+
+##############//
+41.RemoveDuplicate
+#include<stdio.h>
+#include<string.h>
+void RemoveDuplicate(char *s);
+int main()
+{
+	char str[200];
+   while(fgets(str, 200, stdin) != NULL)
+   {
+   	RemoveDuplicate(str);
+      printf("%s", str);
+   }
+   return 0;
+}
+
+void RemoveDuplicate(char *s)
+{
+	int r, w, i, len;
+   len = strlen(s);
+   for (r = w = 0; r < len; r++)
+   {
+   	if(s[r]!='\0')
+      {
+      	s[w++]=s[r];
+         for (i = r + 1; i < len; i++)
+         {
+         	if(s[i]==s[r])
+            	s[i] = '\0';
+         }
+      }
+   }
+   s[w]='\0';
+}
+
+void RemoveDuplicate(char *s)
+{
+	int r,w, len;
+   char ask[256]={};
+   len = strlen(s);
+   for (r=w=0; r < len; r++)
+   {
+   	if(s[r]!='\0')
+      {
+      	if(ask[s[r]]==0){
+            ask[s[r]]++;
+            s[w++]=s[r];
+         }
+         else
+            s[r] = '\0';
+      }
+      
+   }
+   s[w]='\0';
+}
+//##################
+
+#####################//
+42.M men in a circle calling out N nums
+# include<stdio.h>
+
+int main(void)
+{   
+    int M,N;
+    scanf("%d\n%d",&M,&N);
+
+    int a[M], b[M];
+    int i, j, k;
+    for (i=0; i<M;i++)                // 0 1 2 3 4 5 6 7    i-1 i i+1    M-1
+	    a[i]=i+1;                     // 1 2 3 4 5 6 7 8     i i+1 i+2    M      
+    for (i=M,j=0;i>1; i--)
+    {
+   		for (k=1; k<=N; k++)    // j point to the next position to call
+   			if(++j>i-1) j=0;
+    	b[M-i]=j? a[j-1]: a[i-1];
+    	if(j)
+            for(k=--j; k<i; k++)
+                a[k]=a[k+1];
+    }
+    for(i=0; i<M-1; i++)
+   	    printf("%6d", b[i]);
+    printf("\n%6d", a[0]);
+    return 0;
+}
+
+//############################
+
+############################//
+43.print n*n clockwise matrix
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+//right down left up
+int dx[4]={0, 1, 0,-1};
+int dy[4]={1, 0,-1, 0};
+
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    int **a=(int **)malloc(n*sizeof(int *));
+    for(int i=0;i<n;i++){
+        a[i]=(int *)malloc(n*sizeof(int));
+    }
+    //spawn matrix
+    double mark=n*1.0+0.4;//n.4
+    int c=0,x=0,y=0,d=0;//x,y show the position,c count i,d count turns
+    for(int i=0;i<n*n;i++){
+        a[x][y]=i+1;
+        c++;
+        if(c+1>mark){
+            c=0;
+            mark-=0.5;
+            d++;
+        }
+        x+=dx[d%4];
+        y+=dy[d%4];
+    }
+    //print matrix
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            printf("%d",a[i][j]);
+            printf(j==n-1?"":" ");
+        }
+        printf("\n");
+    }
+    for (int i = 0; i < n; i++) 
+        free(a[i]);
+    free(a);
+    return 0;
+}
+//###################
+
+####################//
+44.

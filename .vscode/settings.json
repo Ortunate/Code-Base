@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "cstdlib": "c",
+        "stdio.h": "c",
+        "stdc++.h": "c",
+        "math.h": "c",
+        "string.h": "c",
+        "time.h": "c",
+        "random": "c",
+        "stdbool.h": "c",
+        "queue.h": "c",
+        "text_encoding": "c",
+        "typeinfo": "c"
+    },
+    "C_Cpp.default.compilerPath": "C:\\mingw64\\bin\\gcc.exe"
+}
