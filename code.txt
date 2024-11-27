@@ -1608,4 +1608,135 @@ int main() {
 //###################
 
 ####################//
-44.
+44.BFS printf all maze paths
+#include <stdio.h>
+#include <stdlib.h>
+#define WAY 1 //can go
+#define NOWAY 0  //can't go
+
+// 方向数组：右、下、左、上
+int dr[4] = {0, 1, 0, -1};
+int dc[4] = {1, 0, -1, 0};
+
+int pathCount = 0;
+
+void printPath(int **a, int n, int m, int *path, int step) {//step为路径长度
+    pathCount++;
+    printf("%d\n", pathCount);
+    int **solution = (int **)calloc(n, sizeof(int *));//save path for output
+    for (int i = 0; i < n; i++) {
+        solution[i] = (int *)calloc(m, sizeof(int));
+    }
+    for (int i = 0; i < step; i++) {
+        int x = path[i] / m;//row
+        int y = path[i] % m;//column
+        solution[x][y] = 1;
+    }
+    solution[n - 1][m - 1] = 1; //ending point
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            printf("%d", solution[i][j]);
+            if (j != m - 1) printf(" ");
+        }
+        printf("\n");
+    }
+
+    for (int i = 0; i < n; i++) {
+        free(solution[i]);
+    }
+    free(solution);
+    
+}
+
+void findPaths(int **a, int n, int m, int x, int y, \
+                int **visited, int *path, int step) {
+    if (x == n - 1 && y == m - 1) {
+        printPath(a, n, m, path, step);
+        return;
+    }
+    visited[x][y] = 1;
+    path[step] = x * m + y;//step+1 th point is (x,y)
+    for (int i = 0; i < 4; i++) {
+        if (x + dr[i] >= 0 && x + dr[i] < n && y + dc[i] >= 0 \
+            && y + dc[i] < m && a[x + dr[i]][y + dc[i]] == WAY \
+            && visited[x + dr[i]][y + dc[i]]==0) {
+            findPaths(a, n, m, x + dr[i], y + dc[i], visited, path, step + 1);
+        }
+    }
+    visited[x][y] = 0;
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+    int **a = (int **)malloc(n * sizeof(int *));
+    int **visited = (int **)malloc(n * sizeof(int *));
+    for (int i = 0; i < n; i++) {
+        a[i] = (int *)malloc(m * sizeof(int));
+        visited[i] = (int *)calloc(m, sizeof(int));
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            scanf("%d", &a[i][j]);
+        }
+    }
+    int *path = (int *)malloc(n * m * sizeof(int));
+    findPaths(a, n, m, 0, 0, visited, path, 0);
+    for (int i = 0; i < n; i++) {
+        free(a[i]);
+        free(visited[i]);
+    }
+    free(a);
+    free(visited);
+    free(path);
+    return 0;
+}
+//##########################
+
+####################//
+45.Delete substr(leaving spaces)
+#include<stdio.h>
+#include<stdlib.h>
+//#include<math.h>
+#include<string.h>
+//#include<stdbool.h>
+//#include<time.h>
+//#include<ctype.h>
+//#include<assert.h>
+
+//本关任务：删除子串
+int delSubstr(char *str, const char *substr, char *ptail)
+{
+    char *p = strstr(str,substr);
+    if(p == NULL)
+        return 0;
+    int len = strlen(substr);
+    do{
+        memmove(p,p+len,ptail-p-len+1);
+    }while ((p = strstr(p,substr)) != NULL);
+    return 1;
+}
+
+int main(int argc, char *argv[])
+{
+    char c;
+    char *str =(char *)malloc(100);
+    char *ptail=str;
+    char *substr =(char *)malloc(100);
+    while((c = getchar()) != '\n')
+        *ptail++ = c;
+    *ptail = '\0';
+    scanf("%s",substr);
+    int ret = delSubstr(str,substr,ptail);
+    printf("%s\n",str);
+    printf("%d",ret);
+    free(str);
+    free(substr);
+
+    return 0;
+}
+//#########################
+
+#########################//
+46.
