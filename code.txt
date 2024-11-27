@@ -1739,4 +1739,47 @@ int main(int argc, char *argv[])
 //#########################
 
 #########################//
-46.
+46.Big num multiplication
+#include<stdio.h>
+#include<stdlib.h>
+//#include<math.h>
+#include<string.h>
+//#include<stdbool.h>
+//#include<time.h>
+//#include<ctype.h>
+//#include<assert.h>
+
+
+#define MAX 1000
+void reverse(char *s){
+    int len=strlen(s);
+    for(int i=0;i<len/2;i++){
+        s[i]^=s[len-i-1];
+        s[len-i-1]^=s[i];
+        s[i]^=s[len-i-1];
+    }
+}
+int main(int argc, char *argv[]){
+    char a[MAX]={}, b[MAX]={},res[MAX*2]={};
+    scanf("%s%s",a,b);
+    int lena=strlen(a),lenb=strlen(b);
+    reverse(a);
+    reverse(b);
+    for(int i=0;i<lena;i++){
+        for(int j=0;j<lenb;j++){
+            res[i+j]+=(a[i]-'0')*(b[j]-'0');
+            res[i+j+1]+=res[i+j]/10;
+            res[i+j]%=10;
+        }
+    }
+    int len=lena+lenb;
+    while (len > 1 && res[len - 1] == 0) len--;
+    for(int i=len-1;i>=0;i)
+        printf("%d",res[i--]);
+
+    return 0;
+}
+//############################
+
+##############################//
+47.
