@@ -1,26 +1,31 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef DLLIST_H
+#define DLLIST_H
 #include<stdbool.h>
-#define MAXQUEUELEN 10
-//queue on list
 
-typedef struct item{
-    long arrive;
-    int processtime;
-}Item;
+#define COUNT 0
+//struct for storage
+struct content{
+    char c;
+};
 
+//seal
+typedef struct content Item;
 typedef struct node{
     Item item;
     struct node *next;
+    struct node *prev;
 }Node;
-typedef struct queue{
-    Node *front;
-    Node *rear;
-    int len;
-}Queue;
+
+typedef struct{
+    Node *head, *tail;
+    #if COUNT==1
+    unsigned int size;
+    #endif
+}List;
+
 
 //function declarations
-//change all 'list' to queue
+
 //Op:compare &&
 bool CompareItemAnd(const Item item0, const Item item1);
 
@@ -30,34 +35,34 @@ bool CompareItemOr(const Item item0, const Item item1);
 //Operation: initialize a List
 //Precondition: plist is a List* not NULL
 //Postcondition:List initialized as null
-void InitializeQueue(Queue *pq);
+void InitializeList(List *plist);
 
 //Op:judge a list empty or not
 //Pre:plist
 //post:return true or F
-bool QueueIsEmpty(const Queue *pq);
+bool ListIsEmpty(const List *plist);
 
 //Op:judge a list full or not
 //Pre:plist
 //Post:return T or F
-bool QueueIsFull(const Queue *pq);
+bool ListIsFull(const List *plist);
 
 //Op:confirm the number of elements
 //Pre:plist
 //Post:return the number
-unsigned int QueueItemCount(const Queue *pq);
+unsigned int ListItemCount(const List *plist);
 
 //Op:add an item
 //Post:T or F
-bool Enqueue(Queue *pq, Item item);
+bool AddItem(List *plist, Item item);
 
 //Op:do Func to every element
-void Traverse(const Queue *pq, void(*pfunc)(Item item));
+void Traverse(const List *plist, void(*pfunc)(Item item));
 
 //Op:free memories
-void EmptyQueue(Queue *pq);
+void EmptyList(List *plist);
 
-//Op:dequeue
-bool Dequeue(Queue *pq, Item *pitem);
+//Op:delete
+unsigned int DeleteNode(List *plist, Item item);
 
 #endif

@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include"../Myheads/queue.h"
-
+#include"../Myheads/slqueue.h"
+//queue on list
 //local func decl
 static void CopyToNode(Item item, Node *pnode);
 static void CopyToItem(Node *pnode, Item *pitem);
@@ -9,35 +9,52 @@ static void CopyToItem(Node *pnode, Item *pitem);
 //api func
 
 bool CompareItemAnd(const Item item0, const Item item1){//
-    if(item0.i==item1.i)
-        return true;
-    else
-        return false;
+    return item0.arrive == item1.arrive && item0.processtime == item1.processtime;
 }
 
 bool CompareItemOr(const Item item0, const Item item1){//
-    if(item0.i==item1.i)
-        return true;
-    else
-        return false;
+    return item0.arrive == item1.arrive || item0.processtime == item1.processtime;
 }
 
 void InitializeQueue(Queue *pq){
     pq->front=NULL;
     pq->rear=NULL;
-    pq->len=0;
+    #if COUNT == 1
+        pq->len = 0;
+    #endif
 }
 
 bool QueueIsEmpty(const Queue *pq){
-    return(pq->len==0);
+    #if COUNT == 1
+        return pq->len == 0;
+    #else
+    return pq->front == NULL;
+    #endif
 }
 
 bool QueueIsFull(const Queue *pq){
-    return pq->len==MAXQUEUELEN;
+    #if COUNT == 1
+        return pq->len == MAXQUEUELEN;
+    #else
+        Node *pt = (Node *)malloc(sizeof(Node));
+        bool full = pt == NULL;
+        free(pt);
+        return full;
+    #endif
 }
 
 unsigned int QueueItemCount(const Queue *pq){
-    return pq->len;
+    #if COUNT == 1
+        return pq->len;
+    #else
+    unsigned int count = 0;
+    Node *pn = pq->front;
+    while (pn != NULL) {
+        count++;
+        pn = pn->next;
+    }
+    return count;
+    #endif
 }
 
 bool Enqueue(Queue *pq, Item item){
@@ -56,21 +73,24 @@ bool Enqueue(Queue *pq, Item item){
     else
         pq->rear->next=pnew;
     pq->rear=pnew;
-    pq->len++;
+    #if COUNT == 1
+        pq->len++;
+    #endif
     return true;
 }
 
 bool Dequeue(Queue *pq, Item *pitem){
     if(QueueIsEmpty(pq))
         return false;
-    Node *pn, *pt=NULL;
-    CopyToItem(pq->front,pitem);
-    pt=pq->front;
+    Node *pt = pq->front;
+    CopyToItem(pt, pitem);
     pq->front=pq->front->next;
     free(pt);
-    if(!--pq->len)
-        pq->rear=NULL;
-
+    #if COUNT == 1
+        pq->len--;
+    #endif
+    if (pq->front == NULL)
+        pq->rear = NULL;
     return true;
 }
 
@@ -80,7 +100,6 @@ void Traverse(const Queue *pq, void(*pfunc)(Item item)){
         (*pfunc)(pn->item);
         pn=pn->next;
     }
-    return;
 }
 
 void EmptyQueue(Queue *pq){
@@ -93,10 +112,8 @@ void EmptyQueue(Queue *pq){
 //static func
 static void CopyToNode(Item item, Node *pnode){
     pnode->item=item;
-    return;
 }
 
 static void CopyToItem(Node *pnode, Item *pitem){
     *pitem=pnode->item;
-    return;
 }

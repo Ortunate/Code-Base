@@ -1,11 +1,12 @@
-#ifndef LIST_H
-#define LIST_H
+#ifndef CLLIST_H
+#define CLLIST_H
 #include<stdbool.h>
+
+#define COUNT 0
 //struct for storage
 struct content{
     char c;
 };
-
 
 //seal
 typedef struct content Item;
@@ -13,11 +14,14 @@ typedef struct node{
     Item item;
     struct node *next;
 }Node;
-typedef Node *List;
-/*struct list{
+
+typedef struct{
     Node *head, *tail;
+    #if COUNT==1
+    unsigned int size;
+    #endif
 }List;
-*/
+
 
 //function declarations
 
