@@ -2,7 +2,7 @@
 #define AQUEUE_H
 #include <stdbool.h>
 //queue on arr
-#define MAXQUEUE 100
+#define MAXQUEUE 30
 
 typedef struct item{
     char c;
@@ -30,5 +30,11 @@ bool DeQueue(Queue *pq, Item *pitem);
 
 //Get the number
 unsigned int QueueItemCount(const Queue *pq);
+
+//Empty the queue
+void EmptyTheQueue(Queue *pq);
+
+//Insert an item after pos th item
+bool InsertItem(Queue *pq, Item item, unsigned int pos);
 
 #endif

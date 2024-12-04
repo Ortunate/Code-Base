@@ -33,8 +33,12 @@ bool QueueIsEmpty(const Queue *pq){
 }
 
 bool QueueIsFull(const Queue *pq){
+    #if LIMIT == 1
     #if COUNT == 1
     return pq->len == MAXQUEUELEN;
+    #else
+    return QueueItemCount(pq) == MAXQUEUELEN;
+    #endif
     #else
         Node *pt = (Node *)malloc(sizeof(Node));
         bool full = pt == NULL;
@@ -109,6 +113,35 @@ void EmptyQueue(Queue *pq){
     #if COUNT == 1
     pq->len = 0;
     #endif
+}
+
+bool InsertItem(Queue *pq, Item item, unsigned int pos){
+    if(QueueIsFull(pq) || pos > QueueItemCount(pq))
+        return false;
+    Node *pnew=(Node *)malloc(sizeof(Node));
+    if(pnew == NULL){
+        fprintf(stderr, "Unable to allocate memory\n");
+        exit(EXIT_FAILURE);
+    }
+    CopyToNode(item, pnew);
+    pnew->next=NULL;
+    if(pos == 0){
+        pnew->next = pq->front;
+        pq->front = pnew;
+        #if COUNT == 1
+        pq->len++;
+        #endif
+        return true;
+    }
+    Node *p = pq->front;
+    for(unsigned int i = 0; i < pos - 1; i++)
+        p = p->next;
+    pnew->next = p->next;
+    p->next = pnew;
+    #if COUNT == 1
+    pq->len++;
+    #endif
+    return true;
 }
 
 

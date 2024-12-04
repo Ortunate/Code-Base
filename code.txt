@@ -1203,10 +1203,10 @@ typedef struct node{
 }Node;
 
 typedef struct{
-    Node *head;
     #if COUNT==1
     unsigned int size;
     #endif
+    Node *head;
 }List;
 
 
@@ -1251,6 +1251,9 @@ void EmptyList(List *plist);
 //Op:delete
 unsigned int DeleteNode(List *plist, Item item);
 
+//Op:insert
+bool InsertItem(List *plist, Item item, unsigned int pos);
+
 #endif
 //#############################
 
@@ -1276,7 +1279,7 @@ bool CompareItemOr(const Item item0, const Item item1){//
 void InitializeList(List *plist){
     plist->head = NULL;
     #if COUNT == 1
-        plist->size = 0;
+    plist->size = 0;
     #endif
 }
 
@@ -1293,7 +1296,7 @@ bool ListIsFull(const List *plist){
 
 unsigned int ListItemCount(const List *plist){
     #if COUNT == 1
-        return plist->size;
+    return plist->size;
     #else
         unsigned int count=0;
         Node *pn=plist->head;
@@ -1320,7 +1323,7 @@ bool AddItem(List *plist, Item item){
         scan->next=pnew;
     }
     #if COUNT == 1
-        plist->size++;
+    plist->size++;
     #endif
     return true;
 }
@@ -1342,7 +1345,7 @@ void EmptyList(List *plist){
         free(psave);
     }
     #if COUNT == 1
-        plist->size = 0;
+    plist->size = 0;
     #endif
 }
 
@@ -1371,9 +1374,36 @@ unsigned int DeleteNode(List *plist, Item item){
         ps->next=pc;
     }
     #if COUNT == 1
-        plist->size -= count;
+    plist->size -= count;
     #endif
     return count;
+}
+
+bool InsertNode(List *plist, Item item, unsigned int pos){
+    if(ListIsFull(plist) || pos > ListItemCount(plist))
+        return false;
+    Node *pnew=(Node *)malloc(sizeof(Node));
+    if(pnew==NULL){
+        fprintf(stderr,"Unable to allocate memory\n");
+        exit(EXIT_FAILURE);
+    }
+    CopyToNode(item, pnew);
+    pnew->next=NULL;
+    if(pos == 0){
+        pnew->next=plist->head;
+        plist->head=pnew;
+    }
+    else{
+        Node *scan=plist->head;
+        for(int i=0; i<pos-1; i++)
+            scan=scan->next;
+        pnew->next=scan->next;
+        scan->next=pnew;
+    }
+    #if COUNT == 1
+    plist->size++;
+    #endif
+    return true;
 }
 
 
@@ -2228,8 +2258,11 @@ static void CopyToNode(Item item, Node *pnode){
 #include<stdbool.h>
 
 #define COUNT 1
+#define LIMIT 0
+#if LIMIT == 1
 #define MAXQUEUELEN 10
-//queue on list
+#endif
+//queue on sllist
 
 typedef struct item{
     long arrive;
@@ -2241,11 +2274,11 @@ typedef struct node{
     struct node *next;
 }Node;
 typedef struct queue{
+    #if COUNT == 1
+    unsigned int len;
+    #endif
     Node *front;
     Node *rear;
-    #if COUNT == 1
-        unsigned int len;
-    #endif
 }Queue;
 
 //function declarations
@@ -2289,6 +2322,9 @@ void EmptyQueue(Queue *pq);
 //Op:dequeue
 bool Dequeue(Queue *pq, Item *pitem);
 
+//Op:insert an item after pos th item
+bool InsertItem(Queue *pq, Item item,unsigned int pos);
+
 #endif
 //#############################
 
@@ -2316,21 +2352,25 @@ void InitializeQueue(Queue *pq){
     pq->front=NULL;
     pq->rear=NULL;
     #if COUNT == 1
-        pq->len = 0;
+    pq->len = 0;
     #endif
 }
 
 bool QueueIsEmpty(const Queue *pq){
     #if COUNT == 1
-        return pq->len == 0;
+    return pq->len == 0;
     #else
     return pq->front == NULL;
     #endif
 }
 
 bool QueueIsFull(const Queue *pq){
+    #if LIMIT == 1
     #if COUNT == 1
-        return pq->len == MAXQUEUELEN;
+    return pq->len == MAXQUEUELEN;
+    #else
+    return QueueItemCount(pq) == MAXQUEUELEN;
+    #endif
     #else
         Node *pt = (Node *)malloc(sizeof(Node));
         bool full = pt == NULL;
@@ -2341,7 +2381,7 @@ bool QueueIsFull(const Queue *pq){
 
 unsigned int QueueItemCount(const Queue *pq){
     #if COUNT == 1
-        return pq->len;
+    return pq->len;
     #else
     unsigned int count = 0;
     Node *pn = pq->front;
@@ -2370,7 +2410,7 @@ bool Enqueue(Queue *pq, Item item){
         pq->rear->next=pnew;
     pq->rear=pnew;
     #if COUNT == 1
-        pq->len++;
+    pq->len++;
     #endif
     return true;
 }
@@ -2383,7 +2423,7 @@ bool Dequeue(Queue *pq, Item *pitem){
     pq->front=pq->front->next;
     free(pt);
     #if COUNT == 1
-        pq->len--;
+    pq->len--;
     #endif
     if (pq->front == NULL)
         pq->rear = NULL;
@@ -2402,6 +2442,38 @@ void EmptyQueue(Queue *pq){
     Item dummy;
     while(!QueueIsEmpty(pq))
         Dequeue(pq, &dummy);
+    #if COUNT == 1
+    pq->len = 0;
+    #endif
+}
+
+bool InsertItem(Queue *pq, Item item, unsigned int pos){
+    if(QueueIsFull(pq) || pos > QueueItemCount(pq))
+        return false;
+    Node *pnew=(Node *)malloc(sizeof(Node));
+    if(pnew == NULL){
+        fprintf(stderr, "Unable to allocate memory\n");
+        exit(EXIT_FAILURE);
+    }
+    CopyToNode(item, pnew);
+    pnew->next=NULL;
+    if(pos == 0){
+        pnew->next = pq->front;
+        pq->front = pnew;
+        #if COUNT == 1
+        pq->len++;
+        #endif
+        return true;
+    }
+    Node *p = pq->front;
+    for(unsigned int i = 0; i < pos - 1; i++)
+        p = p->next;
+    pnew->next = p->next;
+    p->next = pnew;
+    #if COUNT == 1
+    pq->len++;
+    #endif
+    return true;
 }
 
 
@@ -2637,7 +2709,7 @@ unsigned int StackItemCount(const Stack *ps){
 #define AQUEUE_H
 #include <stdbool.h>
 //queue on arr
-#define MAXQUEUE 100
+#define MAXQUEUE 30
 
 typedef struct item{
     char c;
@@ -2665,6 +2737,12 @@ bool DeQueue(Queue *pq, Item *pitem);
 
 //Get the number
 unsigned int QueueItemCount(const Queue *pq);
+
+//Empty the queue
+void EmptyTheQueue(Queue *pq);
+
+//Insert an item after pos th item
+bool InsertItem(Queue *pq, Item item, unsigned int pos);
 
 #endif
 //##########################
@@ -2709,6 +2787,22 @@ bool DeQueue(Queue *pq, Item *pitem){
 
 unsigned int QueueItemCount(const Queue *pq){
     return pq->size;
+}
+
+void EmptyTheQueue(Queue *pq){
+    pq->front=0;
+    pq->size=0;
+}
+
+bool InsertItem(Queue *pq, Item item, unsigned int pos){
+    if(QueueIsFull(pq) || pos > pq->size)
+        return false;
+    int i=(pq->front+pq->size-1)%MAXQUEUE;
+    for(; i!=(pq->front+pos-1+MAXQUEUE)%MAXQUEUE; i=(i-1+MAXQUEUE)%MAXQUEUE)
+        pq->items[(i+1)%MAXQUEUE]=pq->items[i];
+    pq->items[(pq->front+pos)%MAXQUEUE]=item;
+    pq->size++;
+    return true;
 }
 //###########################
 

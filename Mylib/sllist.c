@@ -118,6 +118,33 @@ unsigned int DeleteNode(List *plist, Item item){
     return count;
 }
 
+bool InsertNode(List *plist, Item item, unsigned int pos){
+    if(ListIsFull(plist) || pos > ListItemCount(plist))
+        return false;
+    Node *pnew=(Node *)malloc(sizeof(Node));
+    if(pnew==NULL){
+        fprintf(stderr,"Unable to allocate memory\n");
+        exit(EXIT_FAILURE);
+    }
+    CopyToNode(item, pnew);
+    pnew->next=NULL;
+    if(pos == 0){
+        pnew->next=plist->head;
+        plist->head=pnew;
+    }
+    else{
+        Node *scan=plist->head;
+        for(int i=0; i<pos-1; i++)
+            scan=scan->next;
+        pnew->next=scan->next;
+        scan->next=pnew;
+    }
+    #if COUNT == 1
+    plist->size++;
+    #endif
+    return true;
+}
+
 
 //static func
 static void CopyToNode(Item item, Node *pnode){

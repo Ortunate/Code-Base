@@ -64,4 +64,7 @@ void EmptyList(List *plist);
 //Op:delete
 unsigned int DeleteNode(List *plist, Item item);
 
+//Op:insert
+bool InsertItem(List *plist, Item item, unsigned int pos);
+
 #endif

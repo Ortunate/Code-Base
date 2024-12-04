@@ -3,7 +3,10 @@
 #include<stdbool.h>
 
 #define COUNT 1
+#define LIMIT 0
+#if LIMIT == 1
 #define MAXQUEUELEN 10
+#endif
 //queue on sllist
 
 typedef struct item{
@@ -63,5 +66,8 @@ void EmptyQueue(Queue *pq);
 
 //Op:dequeue
 bool Dequeue(Queue *pq, Item *pitem);
+
+//Op:insert an item after pos th item
+bool InsertItem(Queue *pq, Item item,unsigned int pos);
 
 #endif

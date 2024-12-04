@@ -37,3 +37,19 @@ bool DeQueue(Queue *pq, Item *pitem){
 unsigned int QueueItemCount(const Queue *pq){
     return pq->size;
 }
+
+void EmptyTheQueue(Queue *pq){
+    pq->front=0;
+    pq->size=0;
+}
+
+bool InsertItem(Queue *pq, Item item, unsigned int pos){
+    if(QueueIsFull(pq) || pos > pq->size)
+        return false;
+    int i=(pq->front+pq->size-1)%MAXQUEUE;
+    for(; i!=(pq->front+pos-1+MAXQUEUE)%MAXQUEUE; i=(i-1+MAXQUEUE)%MAXQUEUE)
+        pq->items[(i+1)%MAXQUEUE]=pq->items[i];
+    pq->items[(pq->front+pos)%MAXQUEUE]=item;
+    pq->size++;
+    return true;
+}
