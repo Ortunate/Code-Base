@@ -2632,4 +2632,84 @@ unsigned int StackItemCount(const Stack *ps){
 //######################
 
 ######################//
-57.
+57.aqueue.h
+#ifndef AQUEUE_H
+#define AQUEUE_H
+#include <stdbool.h>
+//queue on arr
+#define MAXQUEUE 100
+
+typedef struct item{
+    char c;
+}Item;
+
+typedef struct{
+    int front, size;
+    Item items[MAXQUEUE];
+}Queue;
+
+//Initialize the queue
+void InitializeQueue(Queue *pq);
+
+//Check if empty
+bool QueueIsEmpty(const Queue *pq);
+
+//Check if full
+bool QueueIsFull(const Queue *pq);
+
+//Add an item
+bool EnQueue(Queue *pq, Item item);
+
+//Remove an item
+bool DeQueue(Queue *pq, Item *pitem);
+
+//Get the number
+unsigned int QueueItemCount(const Queue *pq);
+
+#endif
+//##########################
+
+##########################//
+58.aqueue.c
+#include <stdio.h>
+#include "../Myheads/aqueue.h"
+
+//api func
+
+void InitializeQueue(Queue *pq){
+    pq->front=0;
+    pq->size=0;
+}
+
+bool QueueIsEmpty(const Queue *pq){
+    return pq->size == 0;
+}
+
+bool QueueIsFull(const Queue *pq){
+    return pq->size == MAXQUEUE;
+}
+
+bool EnQueue(Queue *pq, Item item){
+    if(QueueIsFull(pq))
+        return false;
+    pq->items[pq->size]=item;
+    pq->size++;
+    return true;
+}
+
+bool DeQueue(Queue *pq, Item *pitem){
+    if(QueueIsEmpty(pq))
+        return false;
+    *pitem=pq->items[pq->front];
+    pq->front++;
+    pq->size--;
+    return true;
+}
+
+unsigned int QueueItemCount(const Queue *pq){
+    return pq->size;
+}
+//###########################
+
+###########################//
+59.
