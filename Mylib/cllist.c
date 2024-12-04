@@ -18,7 +18,7 @@ bool CompareItemOr(const Item item0, const Item item1){//
 void InitializeList(List *plist){
     plist->head = plist->tail = NULL;
     #if COUNT == 1
-        plist->size = 0;
+    plist->size = 0;
     #endif
 }
 
@@ -35,7 +35,7 @@ bool ListIsFull(const List *plist){
 
 unsigned int ListItemCount(const List *plist){
     #if COUNT == 1
-        return plist->size;
+    return plist->size;
     #else
         unsigned int count=0;
         Node *pn=plist->head;
@@ -66,7 +66,7 @@ bool AddItem(List *plist, Item item){
         plist->tail->next = plist->head;
     }
     #if COUNT == 1
-        plist->size++;
+    plist->size++;
     #endif
     return true;
 }
@@ -93,7 +93,7 @@ void EmptyList(List *plist){
         plist->tail = NULL;
     }
     #if COUNT == 1
-        plist->size = 0;
+    plist->size = 0;
     #endif
 }
 
@@ -128,7 +128,7 @@ unsigned int DeleteNode(List *plist, Item item){
         }
     }while(pc!=plist->head);
     #if COUNT == 1
-        plist->size -= count;
+    plist->size -= count;
     #endif
     return count;
 }

@@ -4,7 +4,7 @@
 
 #define COUNT 1
 #define MAXQUEUELEN 10
-//queue on list
+//queue on sllist
 
 typedef struct item{
     long arrive;
@@ -16,11 +16,11 @@ typedef struct node{
     struct node *next;
 }Node;
 typedef struct queue{
+    #if COUNT == 1
+    unsigned int len;
+    #endif
     Node *front;
     Node *rear;
-    #if COUNT == 1
-        unsigned int len;
-    #endif
 }Queue;
 
 //function declarations

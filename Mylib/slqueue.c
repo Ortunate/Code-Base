@@ -20,13 +20,13 @@ void InitializeQueue(Queue *pq){
     pq->front=NULL;
     pq->rear=NULL;
     #if COUNT == 1
-        pq->len = 0;
+    pq->len = 0;
     #endif
 }
 
 bool QueueIsEmpty(const Queue *pq){
     #if COUNT == 1
-        return pq->len == 0;
+    return pq->len == 0;
     #else
     return pq->front == NULL;
     #endif
@@ -34,7 +34,7 @@ bool QueueIsEmpty(const Queue *pq){
 
 bool QueueIsFull(const Queue *pq){
     #if COUNT == 1
-        return pq->len == MAXQUEUELEN;
+    return pq->len == MAXQUEUELEN;
     #else
         Node *pt = (Node *)malloc(sizeof(Node));
         bool full = pt == NULL;
@@ -45,7 +45,7 @@ bool QueueIsFull(const Queue *pq){
 
 unsigned int QueueItemCount(const Queue *pq){
     #if COUNT == 1
-        return pq->len;
+    return pq->len;
     #else
     unsigned int count = 0;
     Node *pn = pq->front;
@@ -74,7 +74,7 @@ bool Enqueue(Queue *pq, Item item){
         pq->rear->next=pnew;
     pq->rear=pnew;
     #if COUNT == 1
-        pq->len++;
+    pq->len++;
     #endif
     return true;
 }
@@ -87,7 +87,7 @@ bool Dequeue(Queue *pq, Item *pitem){
     pq->front=pq->front->next;
     free(pt);
     #if COUNT == 1
-        pq->len--;
+    pq->len--;
     #endif
     if (pq->front == NULL)
         pq->rear = NULL;
@@ -106,6 +106,9 @@ void EmptyQueue(Queue *pq){
     Item dummy;
     while(!QueueIsEmpty(pq))
         Dequeue(pq, &dummy);
+    #if COUNT == 1
+    pq->len = 0;
+    #endif
 }
 
 

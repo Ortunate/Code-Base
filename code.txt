@@ -2416,4 +2416,220 @@ static void CopyToItem(Node *pnode, Item *pitem){
 //###############################
 
 ###############################//
-53.
+53.astack.h
+#ifndef ASTACK_H
+#define ASTACK_H
+#include <stdbool.h>
+//stack on array
+#define MAXSTACK 100
+#define COUNT 1
+//struct for storage
+struct content{
+    char c;
+};
+
+//seal
+typedef struct content Item;
+typedef struct{
+    int top;
+    #if COUNT==1
+    unsigned int size;
+    #endif
+    Item items[MAXSTACK];
+}Stack;
+
+//Initialize the stack
+void InitializeStack(Stack *ps);
+
+//Check if the stack is empty
+bool StackIsEmpty(const Stack *ps);
+
+//Check if the stack is full
+bool StackIsFull(const Stack *ps);
+
+//Push an item onto the stack
+bool Push(Stack *ps, Item item);
+
+//Pop an item from the stack
+bool Pop(Stack *ps, Item *pitem);
+
+//Empty the stack
+void EmptyStack(Stack *ps);
+
+#endif
+//#############################
+
+#############################//
+54.astack.c
+#include <stdio.h>
+#include "../Myheads/astack.h"
+
+
+//api func
+
+void InitializeStack(Stack *ps){
+    ps->top=0;
+    #if COUNT == 1
+    ps->size = 0;
+    #endif
+}
+
+bool StackIsEmpty(const Stack *ps){
+    return ps->top == 0;
+}
+
+bool StackIsFull(const Stack *ps){
+    return ps->top == MAXSTACK;
+}
+
+bool Push(Stack *ps, Item item){
+    if(StackIsFull(ps))
+        return false;
+    ps->items[ps->top++]=item;
+    #if COUNT == 1
+    ps->size++;
+    #endif
+    return true;
+}
+
+bool Pop(Stack *ps, Item *pitem){
+    if (StackIsEmpty(ps))
+        return false;
+    *pitem=ps->items[--ps->top];
+    #if COUNT == 1
+    ps->size--;
+    #endif
+    return true;
+}
+
+void EmptyStack(Stack *ps){
+    ps->top=0;
+    #if COUNT == 1
+    ps->size=0;
+    #endif
+}
+//##############################
+
+##############################//
+55.slstack.h
+#ifndef SLSTACK_H
+#define SLSTACK_H
+#include <stdbool.h>
+//stack on single list
+#define COUNT 0
+
+//struct for storage
+struct content {
+    char c;
+};
+
+//seal
+typedef struct content Item;
+typedef struct node{
+    Item item;
+    struct node *next;
+}Node;
+
+typedef struct{
+    #if COUNT==1
+    unsigned int size;
+    #endif
+    Node *top;
+}Stack;
+
+//Initialize the stack
+void InitializeStack(Stack *ps);
+
+//Check if the stack is empty
+bool StackIsEmpty(const Stack *ps);
+
+//Push an item onto the stack
+bool Push(Stack *ps, Item item);
+
+//Pop an item from the stack
+bool Pop(Stack *ps, Item *pitem);
+
+//Empty the stack
+void EmptyStack(Stack *ps);
+
+//Count the number of items in the stack
+unsigned int StackItemCount(const Stack *ps);
+
+
+#endif
+//###################
+
+###################//
+56.slstack.c
+#include <stdio.h>
+#include <stdlib.h>
+#include "../Myheads/slstack.h"
+
+//api func
+
+void InitializeStack(Stack *ps){
+    ps->top=NULL;
+    #if COUNT == 1
+    ps->size=0;
+    #endif
+}
+
+bool StackIsEmpty(const Stack *ps){
+    return ps->top == NULL;
+}
+
+bool Push(Stack *ps, Item item){
+    Node *pnew=(Node *)malloc(sizeof(Node));
+    if(pnew == NULL)
+        return false;
+    pnew->item=item;
+    pnew->next=ps->top;
+    ps->top = pnew;
+    #if COUNT == 1
+    ps->size++;
+    #endif
+    return true;
+}
+
+bool Pop(Stack *ps, Item *pitem){
+    if(StackIsEmpty(ps))
+        return false;
+    Node *pt=ps->top;
+    *pitem=pt->item;
+    ps->top=pt->next;
+    free(pt);
+    #if COUNT == 1
+    ps->size--;
+    #endif
+    return true;
+}
+
+void EmptyStack(Stack *ps){
+    Node *psave;
+    while(ps->top != NULL){
+        psave=ps->top;
+        ps->top=psave->next;
+        free(psave);
+    }
+    #if COUNT == 1
+    ps->size=0;
+    #endif
+}
+
+unsigned int StackItemCount(const Stack *ps){
+    #if COUNT == 1
+    return ps->size;
+    #else
+    unsigned int count=0;
+    Node *pn=ps->top;
+    while(pn!=NULL){
+        count++;
+        pn=pn->next;
+    }
+    return count;
+    #endif
+}
+//######################
+
+######################//
+57.

@@ -16,10 +16,10 @@ typedef struct node{
 }Node;
 
 typedef struct{
-    Node *head;
     #if COUNT==1
     unsigned int size;
     #endif
+    Node *head;
 }List;
 
 
