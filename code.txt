@@ -2692,7 +2692,8 @@ bool QueueIsFull(const Queue *pq){
 bool EnQueue(Queue *pq, Item item){
     if(QueueIsFull(pq))
         return false;
-    pq->items[pq->size]=item;
+    int rear=(pq->front+pq->size)%MAXQUEUE;
+    pq->items[rear]=item;
     pq->size++;
     return true;
 }
@@ -2701,7 +2702,7 @@ bool DeQueue(Queue *pq, Item *pitem){
     if(QueueIsEmpty(pq))
         return false;
     *pitem=pq->items[pq->front];
-    pq->front++;
+    pq->front=(pq->front+1)%MAXQUEUE;
     pq->size--;
     return true;
 }
