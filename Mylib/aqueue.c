@@ -44,8 +44,12 @@ void EmptyTheQueue(Queue *pq){
 }
 
 bool InsertItem(Queue *pq, Item item, unsigned int pos){
-    if(QueueIsFull(pq) || pos > pq->size)
+    if(QueueIsFull(pq))
         return false;
+    if(QueueIsEmpty(pq) || pos > pq->size){
+        EnQueue(pq, item);
+        return true;
+    }
     int i=(pq->front+pq->size-1)%MAXQUEUE;
     for(; i!=(pq->front+pos-1+MAXQUEUE)%MAXQUEUE; i=(i-1+MAXQUEUE)%MAXQUEUE)
         pq->items[(i+1)%MAXQUEUE]=pq->items[i];

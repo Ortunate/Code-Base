@@ -62,9 +62,18 @@ void Traverse(const List *plist, void(*pfunc)(Item item));
 void EmptyList(List *plist);
 
 //Op:delete
-unsigned int DeleteNode(List *plist, Item item);
+unsigned int DeleteItem(List *plist, Item item);
 
 //Op:insert
-bool InsertItem(List *plist, Item item, unsigned int pos);
+bool InsertNode(List *plist, Item item, unsigned int pos);
+
+//Op:search
+bool SearchNode(const List *plist, Node **pn, Item item);
+
+//Op:show
+void ShowList(const List *plist);
+
+//Op:reverse
+void ReverseList(List *plist);
 
 #endif

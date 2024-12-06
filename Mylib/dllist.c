@@ -16,7 +16,7 @@ bool CompareItemOr(const Item item0, const Item item1){//
 }
 
 void InitializeList(List *plist){
-    plist->head = plist->tail = NULL;
+    plist->head=plist->tail=NULL;
     #if COUNT == 1
     plist->size = 0;
     #endif
@@ -39,7 +39,7 @@ unsigned int ListItemCount(const List *plist){
     #else
         unsigned int count=0;
         Node *pn=plist->head;
-        while(pn!=NULL){
+        while(pn){
             count++;
             pn=pn->next;
         }
@@ -49,12 +49,12 @@ unsigned int ListItemCount(const List *plist){
 
 bool AddItem(List *plist, Item item){
     Node *pnew=(Node *)malloc(sizeof(Node));
-    if (pnew==NULL)
+    if (!pnew)
         return false;
     CopyToNode(item, pnew);
     pnew->next=NULL;
     pnew->prev=plist->tail;
-    if (plist->head == NULL) 
+    if (!plist->head) 
         plist->head=pnew;
     else
         plist->tail->next=pnew;
@@ -67,7 +67,7 @@ bool AddItem(List *plist, Item item){
 
 void Traverse(const List *plist, void(*pfunc)(Item item)){
     Node *pn=plist->head;
-    while(pn!=NULL){
+    while(pn){
         (*pfunc)(pn->item);
         pn=pn->next;
     }
@@ -76,41 +76,39 @@ void Traverse(const List *plist, void(*pfunc)(Item item)){
 
 void EmptyList(List *plist){
     Node *psave;
-    while(plist->head!=NULL){
-        psave = plist->head;
-        plist->head = plist->head->next;
+    while(plist->head){
+        psave=plist->head;
+        plist->head=plist->head->next;
         free(psave);
     }
-    plist->tail = NULL;
+    plist->tail=NULL;
     #if COUNT == 1
     plist->size = 0;
     #endif
 }
 
 unsigned int DeleteNode(List *plist, Item item){
-    if(plist->head==NULL)
+    if(!plist->head)
         return 0;
     Node *pc=plist->head, *pt=NULL;
     unsigned int count=0;
-
-    while(pc!=NULL && CompareItemAnd(item,pc->item)){
+    while(pc && CompareItemAnd(item,pc->item)){
         count++;
         pt=pc;
         pc=pc->next;
         free(pt);
     }
-    if(pc==NULL){
+    if(!pc){
         plist->tail=NULL;
         return count;
-    }
-    else
+    }else
         pc->prev=NULL;
-    plist->head = pc;
-    while(pc!=NULL){
+    plist->head=pc;
+    while(pc){
         if(CompareItemAnd(item, pc->item)){
             count++;
             pc->prev->next=pc->next;
-            if(pc->next != NULL)
+            if(pc->next)
                 pc->next->prev=pc->prev;
             else
                 plist->tail=pc->prev;

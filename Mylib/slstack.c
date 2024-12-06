@@ -17,7 +17,7 @@ bool StackIsEmpty(const Stack *ps){
 
 bool Push(Stack *ps, Item item){
     Node *pnew=(Node *)malloc(sizeof(Node));
-    if(pnew == NULL)
+    if(!pnew)
         return false;
     pnew->item=item;
     pnew->next=ps->top;
@@ -43,7 +43,7 @@ bool Pop(Stack *ps, Item *pitem){
 
 void EmptyStack(Stack *ps){
     Node *psave;
-    while(ps->top != NULL){
+    while(ps->top){
         psave=ps->top;
         ps->top=psave->next;
         free(psave);
@@ -59,7 +59,7 @@ unsigned int StackItemCount(const Stack *ps){
     #else
     unsigned int count=0;
     Node *pn=ps->top;
-    while(pn!=NULL){
+    while(pn){
         count++;
         pn=pn->next;
     }

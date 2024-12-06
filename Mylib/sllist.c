@@ -16,7 +16,7 @@ bool CompareItemOr(const Item item0, const Item item1){//
 }
 
 void InitializeList(List *plist){
-    plist->head = NULL;
+    plist->head=NULL;
     #if COUNT == 1
     plist->size = 0;
     #endif
@@ -39,7 +39,7 @@ unsigned int ListItemCount(const List *plist){
     #else
         unsigned int count=0;
         Node *pn=plist->head;
-        while(pn!=NULL){
+        while(pn){
             count++;
             pn=pn->next;
         }
@@ -49,15 +49,17 @@ unsigned int ListItemCount(const List *plist){
 
 bool AddItem(List *plist, Item item){
     Node *pnew=(Node *)malloc(sizeof(Node));
-    if (pnew==NULL)
+    if (!pnew){
+        printf("Unable to allocate memory\n");
         return false;
+    }
     CopyToNode(item, pnew);
     pnew->next=NULL;
-    if (plist->head == NULL) 
-        plist->head = pnew;
+    if (!plist->head) 
+        plist->head=pnew;
     else{
-        Node *scan = plist->head;
-        while(scan->next!=NULL)
+        Node *scan=plist->head;
+        while(scan->next)
             scan=scan->next;
         scan->next=pnew;
     }
@@ -69,7 +71,7 @@ bool AddItem(List *plist, Item item){
 
 void Traverse(const List *plist, void(*pfunc)(Item item)){
     Node *pn=plist->head;
-    while(pn!=NULL){
+    while(pn){
         (*pfunc)(pn->item);
         pn=pn->next;
     }
@@ -78,9 +80,9 @@ void Traverse(const List *plist, void(*pfunc)(Item item)){
 
 void EmptyList(List *plist){
     Node *psave;
-    while(plist->head!=NULL){
-        psave = plist->head;
-        plist->head = plist->head->next;
+    while(plist->head){
+        psave=plist->head;
+        plist->head=plist->head->next;
         free(psave);
     }
     #if COUNT == 1
@@ -88,23 +90,23 @@ void EmptyList(List *plist){
     #endif
 }
 
-unsigned int DeleteNode(List *plist, Item item){
-    if(plist->head==NULL)
+unsigned int DeleteItem(List *plist, Item item){
+    if(!plist->head)
         return 0;
     Node *pc=plist->head, *pt=NULL;
     unsigned int count=0;
-    while(pc!=NULL && CompareItemAnd(item,pc->item)){
+    while(pc && CompareItemAnd(item,pc->item)){
         count++;
         pt=pc;
         pc=pc->next;
         free(pt);
     }
-    plist->head = pc;
+    plist->head=pc;
     Node *ps=pc;
-    while(pc!=NULL){
+    while(pc){
         ps=pc;
         pc=pc->next;
-        while(pc!=NULL && CompareItemAnd(item,pc->item)){
+        while(pc && CompareItemAnd(item,pc->item)){
             count++;
             pt=pc;
             pc=pc->next;
@@ -119,20 +121,23 @@ unsigned int DeleteNode(List *plist, Item item){
 }
 
 bool InsertNode(List *plist, Item item, unsigned int pos){
-    if(ListIsFull(plist) || pos > ListItemCount(plist))
+    if(ListIsFull(plist))
         return false;
+    if(ListIsEmpty(plist) || pos > ListItemCount(plist)){
+        AddItem(plist, item);
+        return true;
+    }
     Node *pnew=(Node *)malloc(sizeof(Node));
-    if(pnew==NULL){
+    if(!pnew){
         fprintf(stderr,"Unable to allocate memory\n");
         exit(EXIT_FAILURE);
     }
     CopyToNode(item, pnew);
     pnew->next=NULL;
-    if(pos == 0){
+    if(!pos){
         pnew->next=plist->head;
         plist->head=pnew;
-    }
-    else{
+    }else{
         Node *scan=plist->head;
         for(int i=0; i<pos-1; i++)
             scan=scan->next;
@@ -145,9 +150,48 @@ bool InsertNode(List *plist, Item item, unsigned int pos){
     return true;
 }
 
+bool SearchNode(const List *plist, Node **pn, Item item){
+    if(!plist->head){
+        printf("The list is empty.\n");
+        return false;
+    }
+    Node *pc=plist->head;
+    while(pc){
+        if(CompareItemAnd(item,pc->item)){
+            *pn=pc;
+            return true;
+        }
+        pc=pc->next;
+    }
+    return false;
+}
+
+void ShowList(const List *plist){
+    if(!plist->head){
+        printf("The list is empty.\n");
+        return;
+    }
+Node *pn=plist->head;
+    for(int i=0; pn; pn=pn->next, i++)
+        printf("%d: %c \n", i, pn->item.c);
+    printf("\n");
+}
+
+void ReverseList(List *plist){
+    if(!plist->head)
+        return;
+    Node *phead=plist->head, *ptail=NULL, *pnext;
+    while(phead){
+        pnext=phead->next;
+        phead->next=ptail;
+        ptail=phead;
+        phead=pnext;
+    }
+    plist->head=ptail;
+}
+
 
 //static func
 static void CopyToNode(Item item, Node *pnode){
     pnode->item=item;
-    return;
 }

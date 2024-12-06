@@ -64,4 +64,12 @@ void EmptyList(List *plist);
 //Op:delete
 unsigned int DeleteNode(List *plist, Item item);
 
+//Op:insert
+bool InsertNode(List *plist, Item item, unsigned int pos);
+
+//Op:search
+bool SearchNode(const List *plist, Node **pn, Item item);
+
+//Op:show
+void ShowList(const List *plist);
 #endif

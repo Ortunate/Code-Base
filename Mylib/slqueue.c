@@ -40,8 +40,8 @@ bool QueueIsFull(const Queue *pq){
     return QueueItemCount(pq) == MAXQUEUELEN;
     #endif
     #else
-        Node *pt = (Node *)malloc(sizeof(Node));
-        bool full = pt == NULL;
+        Node *pt=(Node *)malloc(sizeof(Node));
+        bool full=pt == NULL;
         free(pt);
         return full;
     #endif
@@ -51,11 +51,11 @@ unsigned int QueueItemCount(const Queue *pq){
     #if COUNT == 1
     return pq->len;
     #else
-    unsigned int count = 0;
-    Node *pn = pq->front;
-    while (pn != NULL) {
+    unsigned int count=0;
+    Node *pn=pq->front;
+    while (pn) {
         count++;
-        pn = pn->next;
+        pn=pn->next;
     }
     return count;
     #endif
@@ -65,7 +65,7 @@ bool Enqueue(Queue *pq, Item item){
     if(QueueIsFull(pq))
         return false;
     Node *pnew=(Node *)malloc(sizeof(Node));
-    if(pnew==NULL){
+    if(!pnew){
         fprintf(stderr,"Unable to allocate memory\n");
         exit(EXIT_FAILURE);
     }
@@ -86,21 +86,21 @@ bool Enqueue(Queue *pq, Item item){
 bool Dequeue(Queue *pq, Item *pitem){
     if(QueueIsEmpty(pq))
         return false;
-    Node *pt = pq->front;
+    Node *pt=pq->front;
     CopyToItem(pt, pitem);
     pq->front=pq->front->next;
     free(pt);
     #if COUNT == 1
     pq->len--;
     #endif
-    if (pq->front == NULL)
-        pq->rear = NULL;
+    if (!pq->front)
+        pq->rear=NULL;
     return true;
 }
 
 void Traverse(const Queue *pq, void(*pfunc)(Item item)){
     Node *pn=pq->front;
-    while(pn!=NULL){
+    while(pn){
         (*pfunc)(pn->item);
         pn=pn->next;
     }
@@ -111,15 +111,19 @@ void EmptyQueue(Queue *pq){
     while(!QueueIsEmpty(pq))
         Dequeue(pq, &dummy);
     #if COUNT == 1
-    pq->len = 0;
+    pq->len=0;
     #endif
 }
 
 bool InsertItem(Queue *pq, Item item, unsigned int pos){
-    if(QueueIsFull(pq) || pos > QueueItemCount(pq))
+    if(QueueIsFull(pq))
         return false;
+    if(QueueIsEmpty(pq) || pos > QueueItemCount(pq)){
+        Enqueue(pq, item);
+        return true;
+    }
     Node *pnew=(Node *)malloc(sizeof(Node));
-    if(pnew == NULL){
+    if(!pnew){
         fprintf(stderr, "Unable to allocate memory\n");
         exit(EXIT_FAILURE);
     }
