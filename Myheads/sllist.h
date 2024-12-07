@@ -76,4 +76,7 @@ void ShowList(const List *plist);
 //Op:reverse
 void ReverseList(List *plist);
 
+//Op:sort
+void SortList(List *plist);
+
 #endif

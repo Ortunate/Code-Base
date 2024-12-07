@@ -34,6 +34,10 @@ bool CompareItemAnd(const Item item0, const Item item1);
 //Op:compare ||
 bool CompareItemOr(const Item item0, const Item item1);
 
+//Op:sequence 2 nodes
+int Sequence(const Node *pn0, const Node *pn1);
+
+
 //Operation: initialize a List
 //Precondition: plist is a List* not NULL
 //Postcondition:List initialized as null

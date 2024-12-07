@@ -15,6 +15,11 @@ bool CompareItemOr(const Item item0, const Item item1){//
     return item0.c == item1.c;
 }
 
+int Sequence(const Node *pn0, const Node *pn1){//
+    return pn0->item.c - pn1->item.c;
+}
+
+
 void InitializeList(List *plist){
     plist->head=NULL;
     #if COUNT == 1
@@ -180,16 +185,36 @@ Node *pn=plist->head;
 void ReverseList(List *plist){
     if(!plist->head)
         return;
-    Node *phead=plist->head, *ptail=NULL, *pnext;
-    while(phead){
-        pnext=phead->next;
-        phead->next=ptail;
-        ptail=phead;
-        phead=pnext;
+    Node *pc=plist->head, *ps=NULL, *pnext;
+    while(pc){
+        pnext=pc->next;
+        pc->next=ps;
+        ps=pc;
+        pc=pnext;
     }
-    plist->head=ptail;
+    plist->head->next=NULL;
+    plist->head=ps;
 }
 
+void SortList(List *plist){
+    if(ListItemCount(plist)<2)
+        return;
+    Node *p1=plist->head, *p2, *pmin;
+    Item temp;
+    while(p1){
+        pmin=p1;
+        p2=p1->next;
+        while(p2){
+            if(Sequence(p2,pmin)<0)
+                pmin=p2;
+            p2=p2->next;
+        }
+        temp=p1->item;
+        p1->item=pmin->item;
+        pmin->item=temp;
+        p1=p1->next;
+    }
+}
 
 //static func
 static void CopyToNode(Item item, Node *pnode){
